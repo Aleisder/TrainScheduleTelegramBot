@@ -1,10 +1,12 @@
-package ru.tsarenko.model;
+package ru.tsarenko.model.api;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.Getter;
 
 import java.time.LocalTime;
 
 public class Segment {
+    @Getter
     @SerializedName("thread")
     private Thread thread;
 
@@ -17,8 +19,13 @@ public class Segment {
     @SerializedName("arrival")
     private String arrival;
 
-    public Integer getDuration() {
-        return duration / 60;
+    public String getDurationFormatted() {
+        var durationMin = duration / 60;
+        if (durationMin < 60)
+            return String.format("%d мин", durationMin);
+        if (durationMin == 60)
+            return String.format("%d ч", durationMin / 60);
+        return String.format("%d ч %d мин", durationMin / 60, durationMin % 60);
     }
 
     public LocalTime getDeparture() {

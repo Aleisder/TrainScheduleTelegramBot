@@ -1,4 +1,4 @@
-package ru.tsarenko.model;
+package ru.tsarenko.model.api;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;

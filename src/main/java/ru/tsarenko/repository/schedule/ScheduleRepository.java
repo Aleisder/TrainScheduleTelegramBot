@@ -1,11 +1,11 @@
-package ru.tsarenko.repository;
+package ru.tsarenko.repository.schedule;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
-import ru.tsarenko.model.Schedule;
+import ru.tsarenko.model.api.Schedule;
 import ru.tsarenko.util.UrlBuilder;
 
 @Repository

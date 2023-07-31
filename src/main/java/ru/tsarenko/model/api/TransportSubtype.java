@@ -1,13 +1,10 @@
-package ru.tsarenko.model;
+package ru.tsarenko.model.api;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 
 @Getter
-public class From {
+public class TransportSubtype {
     @SerializedName("title")
     private String title;
-
-    @SerializedName("code")
-    private String code;
 }
