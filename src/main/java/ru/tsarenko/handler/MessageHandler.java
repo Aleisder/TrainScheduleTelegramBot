@@ -1,60 +1,83 @@
 package ru.tsarenko.handler;
 
+import com.sun.jdi.LongValue;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-import ru.tsarenko.keyboard.MainKeyboard;
 import ru.tsarenko.repository.route.UserRouteDao;
-import ru.tsarenko.repository.schedule.ScheduleRepository;
-import ru.tsarenko.util.InlineKeyboardMaker;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.regex.Pattern;
 
+import static ru.tsarenko.handler.BotMessage.*;
 import static ru.tsarenko.handler.UserMessage.*;
+import static ru.tsarenko.keyboard.InlineKeyboardMaker.buildInlineKeyboardOfRows;
+import static ru.tsarenko.keyboard.MainKeyboard.getMainKeyboard;
 
 @Component
 @AllArgsConstructor
 public class MessageHandler {
 
-    private final ScheduleRepository scheduleRepository;
     private final UserRouteDao userRouteRepository;
-    private final MainKeyboard mainKeyboard;
-    private final InlineKeyboardMaker inlineKeyboardMaker;
+    private final Pattern pattern = Pattern.compile("\\d{6} - \\d{6}");
 
     public BotApiMethod<?> handle(Message message) {
         var id = message.getChatId().toString();
         var text = message.getText();
         return switch (text) {
             case START -> sendStartMessage(id);
-            case KUBINKA_SVALANSKIY_BULVAR -> new SendMessage(id, scheduleRepository.getSchedule().getFormatted());
             case MY_ROUTES -> sendRoutes(id);
-            case ADD_ROUTE -> new SendMessage(id, "Coming soon...");
-            default -> new SendMessage(id, "Я не знаю такой команды");
+            case ADD_ROUTE -> sendAddRoute(id);
+            default -> {
+                if (pattern.matcher(text).matches())
+                    yield sendRoutedIsAdded(id, text);
+
+                yield new SendMessage(id, UNKNOWN_COMMAND_MESSAGE);
+            }
         };
     }
 
     private SendMessage sendStartMessage(String id) {
         return SendMessage.builder()
                 .chatId(id)
-                .text("Привет!")
-                .replyMarkup(mainKeyboard.get())
+                .text(START_MESSAGE)
+                .replyMarkup(getMainKeyboard())
                 .build();
     }
 
     private SendMessage sendRoutes(String id) {
+
+        if (userRouteRepository.getUserRoutes(Long.valueOf(id)) == null) {
+            return SendMessage.builder()
+                    .chatId(id)
+                    .text("У вас нет добавленных маршрутов")
+                    .build();
+        }
+
         return SendMessage.builder()
                 .chatId(id)
                 .text("Добавленные маршруты:")
+                .replyMarkup(buildInlineKeyboardOfRows(userRouteRepository.getUserRoutes(Long.valueOf(id))))
                 .build();
+    }
+
+    private SendMessage sendAddRoute(String id) {
+        return SendMessage.builder()
+                .chatId(id)
+                .text(ADD_ROUTE_MESSAGE)
+                .parseMode(ParseMode.MARKDOWN)
+                .build();
+    }
+
+    private SendMessage sendRoutedIsAdded(String id, String routeCodes) {
+        userRouteRepository.addRoute(
+                Long.valueOf(id),
+                routeCodes
+        );
+
+        return SendMessage.builder().chatId(id).text("Вы только что добавили маршрут").build();
     }
 
 }

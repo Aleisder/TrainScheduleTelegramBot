@@ -14,7 +14,7 @@ public class Schedule {
     @SerializedName("segments")
     private Segment[] segments;
 
-    public String getFormatted() {
+    public String formatted() {
         var builder = new StringBuilder(
                 String.format(
                         "Ближайшие электрички по маршруту %s - %s на сегодня:\n\n",

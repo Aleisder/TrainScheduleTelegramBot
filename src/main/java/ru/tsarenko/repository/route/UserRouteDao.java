@@ -7,8 +7,8 @@ import java.util.HashMap;
 
 public interface UserRouteDao {
 
-    HashMap<Integer, ArrayList<Route>> userRoutes = new HashMap<>();
+    HashMap<Long, ArrayList<Route>> userRoutes = new HashMap<>();
 
-    void addRoute(Integer userId, Route route);
-    String[] getUserRoutes(Integer userId);
+    void addRoute(Long userId, String routeCodes);
+    ArrayList<Route> getUserRoutes(Long userId);
 }

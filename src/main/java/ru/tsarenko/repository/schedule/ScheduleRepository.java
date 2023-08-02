@@ -15,13 +15,12 @@ public class ScheduleRepository {
     private final RestTemplate restTemplate;
     private final UrlBuilder urlBuilder;
 
-    public Schedule getSchedule() {
-        var responce = restTemplate.exchange(
-                urlBuilder.getSearchScheduleUrl("182603", "181615"),
+    public Schedule getSchedule(String fromStationCode, String toStationCode) {
+        return restTemplate.exchange(
+                urlBuilder.getSearchScheduleUrl(fromStationCode, toStationCode),
                 HttpMethod.GET,
                 HttpEntity.EMPTY,
                 Schedule.class
-        );
-        return responce.getBody();
+        ).getBody();
     }
 }

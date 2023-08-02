@@ -1,11 +1,13 @@
 package ru.tsarenko.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class Route {
-    private Integer fromCode;
     private String fromTitle;
-    private Integer toCode;
+    private Long fromCode;
     private String toTitle;
+    private Long toCode;
 }

@@ -17,7 +17,6 @@ public class WebhookController {
 
     @PostMapping("/")
     public BotApiMethod<?> onUpdateReceived(@RequestBody Update update) {
-        System.out.println("GOT IT");
         return trainScheduleBot.onWebhookUpdateReceived(update);
     }
 }
