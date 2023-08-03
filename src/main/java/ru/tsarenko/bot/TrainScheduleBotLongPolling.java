@@ -29,7 +29,6 @@ public class TrainScheduleBotLongPolling extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        System.out.println("GOT IT");
         try {
             if (update.hasMessage()) {
                 execute(

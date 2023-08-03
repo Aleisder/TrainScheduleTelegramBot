@@ -1,4 +1,4 @@
-package ru.tsarenko.handler;
+package ru.tsarenko.service;
 
 public interface BotMessage {
     String START_MESSAGE = """

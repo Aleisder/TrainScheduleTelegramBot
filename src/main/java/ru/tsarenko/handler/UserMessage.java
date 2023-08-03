@@ -4,5 +4,4 @@ public interface UserMessage {
     String START = "/start";
     String MY_ROUTES = "Мои маршруты";
     String ADD_ROUTE = "Добавить маршрут";
-    String KUBINKA_SVALANSKIY_BULVAR = "Кубинка - Славянский бульвар";
 }

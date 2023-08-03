@@ -10,11 +10,12 @@ import ru.tsarenko.util.UrlBuilder;
 
 @Repository
 @AllArgsConstructor
-public class ScheduleRepository {
+public class ScheduleRepository implements ScheduleDao {
 
     private final RestTemplate restTemplate;
     private final UrlBuilder urlBuilder;
 
+    @Override
     public Schedule getSchedule(String fromStationCode, String toStationCode) {
         return restTemplate.exchange(
                 urlBuilder.getSearchScheduleUrl(fromStationCode, toStationCode),
